@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexttakeout_seller/authentication/authentication_bloc.dart';
+
+import 'authentication/index.dart';
+import 'authentication/login_screen.dart';
+import 'authentication/register_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +57,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  AuthBloc _authBloc;
 
   void _incrementCounter() {
     setState(() {
@@ -61,6 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = new AuthBloc();
+    _authBloc.add(LoadAuthEvent(false));
   }
 
   @override
@@ -78,40 +92,39 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: BlocProvider(
+        create: (BuildContext context) => _authBloc,
+        child: BlocBuilder<AuthBloc, AuthState>(
+            bloc: _authBloc,
+            builder: (
+              BuildContext context,
+              AuthState currentState,
+            ) {
+              // Uninitialized state
+              if (currentState is UnAuthState) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              // if initialized then show login screen
+              if (currentState is InAuthState) {
+                return LoginScreen();
+              }
+              // if it's new user, let them register
+              if (currentState is NewUserCreatedAuthState) {
+                return RegisterScreen();
+              }
+              // if authenticated then show home screen
+              if (currentState is AuthenticatedAuthState) {
+                return Text('This is home page');
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }),
+      )),
     );
   }
 }

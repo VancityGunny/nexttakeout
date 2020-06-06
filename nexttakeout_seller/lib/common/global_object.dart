@@ -1,0 +1,9 @@
+library my_prj.globals;
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:nexttakeout_seller/user/user_model.dart';
+
+
+UserModel loggedInUser;
+String currentUserId;
+FirebaseStorage storage = FirebaseStorage.instance;
