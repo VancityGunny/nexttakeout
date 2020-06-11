@@ -78,7 +78,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                             .getBusienssInfo(myYelpIdController.text)
                             .then((value) {
                           var foundBusiness = (value != null)
-                              ? BusinessModel.fromJson(value)
+                              ? BusinessModel.fromYelpJson(value)
                               : null;
                           newBusiness.address = foundBusiness.address;
                           myBusinessAddressController.text =
@@ -91,6 +91,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               foundBusiness.businessName;
                           newBusiness.phone = foundBusiness.phone;
                           myBusinessPhoneController.text = foundBusiness.phone;
+                          newBusiness.photoUrl = foundBusiness.photoUrl;
                         });
                       },
                       child: Text('Fetch Data From Yelp'),

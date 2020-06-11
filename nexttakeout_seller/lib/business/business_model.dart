@@ -18,6 +18,21 @@ class BusinessModel extends Equatable {
   @override
   List<Object> get props => [id, businessName, yelpId, phone, photoUrl, this.address, this.coordinates, this.ownerUserId];
 
+  factory BusinessModel.fromYelpJson(Map<dynamic, dynamic> json) {
+    return BusinessModel(
+        json['id'] as String,
+        json['name'] as String,
+        json['yelpId'] as String,
+        json['phone'] as String,
+        json['image_url'] as String,
+        List<String>.from(json['location']['display_address']),
+        new GeoFirePoint(json['coordinates']['latitude'] as double,
+        json['coordinates']['longitude'] as double),
+        json['owner_user_id'] as String,        
+        );
+  }
+
+
   factory BusinessModel.fromJson(Map<dynamic, dynamic> json) {
     return BusinessModel(
         json['id'] as String,

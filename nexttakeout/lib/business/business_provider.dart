@@ -49,7 +49,7 @@ class BusinessProvider {
     var allBusinesses = await _firestore.collection('/businesses').getDocuments();
     if(allBusinesses.documents.length>0)
     {
-      allBusinesses.documents.map((e) => BusinessModel.fromJson(e.data)).toList();
+      return allBusinesses.documents.map((e) => BusinessModel.fromDocumentSnapshot(e)).toList();
     }
     else{
       return List<BusinessModel>();
