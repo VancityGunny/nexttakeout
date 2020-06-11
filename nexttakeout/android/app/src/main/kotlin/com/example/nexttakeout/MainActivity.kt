@@ -1,4 +1,4 @@
-package com.example.nexttakeout
+package com.zeusshard.nexttakeout
 
 import io.flutter.embedding.android.FlutterActivity
 

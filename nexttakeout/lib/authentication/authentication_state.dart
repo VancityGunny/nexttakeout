@@ -16,26 +16,6 @@ abstract class AuthState extends Equatable {
   List<Object> get props => ([...propss ?? []]);
 }
 
-/// new user created, and need more sign up detail
-class NewUserCreatedAuthState extends AuthState {
-  final String displayName;
-
-  NewUserCreatedAuthState(this.displayName) : super([displayName]);
-
-  @override
-  String toString() => 'New user created: $displayName';
-
-  @override
-  NewUserCreatedAuthState getStateCopy() {
-    return NewUserCreatedAuthState(displayName);
-  }
-
-  @override
-  NewUserCreatedAuthState getNewVersion() {
-    return NewUserCreatedAuthState(displayName);
-  }
-}
-
 /// Authenticated
 class AuthenticatedAuthState extends AuthState {
   final String displayName;

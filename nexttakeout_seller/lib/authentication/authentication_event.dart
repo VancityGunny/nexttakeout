@@ -4,6 +4,9 @@ import 'dart:developer' as developer;
 import 'package:nexttakeout_seller/authentication/index.dart';
 import 'package:meta/meta.dart';
 import 'package:nexttakeout_seller/business/business_model.dart';
+import 'package:nexttakeout_seller/business/business_repository.dart';
+
+import 'package:nexttakeout_seller/common/global_object.dart' as globals;
 
 @immutable
 abstract class AuthEvent {
@@ -21,6 +24,8 @@ class RegisterNewBusinessAuthEvent extends AuthEvent {
   Stream<AuthState> applyAsync({AuthState currentState, AuthBloc bloc}) async* {
     try {
       //TODO: add new business
+      var _businessRepository = new BusinessRepository();
+      var newBusinessId = _businessRepository.addBusiness(newBusiness);
       yield AuthenticatedAuthState(newBusiness.businessName);
     } catch (_) {
       //TODO: catch failed login
@@ -47,6 +52,9 @@ class LoginInWithGoogleAuthEvent extends AuthEvent {
         yield NewUserCreatedAuthState(firebaseUser.displayName);
       } else {
         // if existing user then show as authenticated
+        // get related business
+        BusinessRepository _businessRepo = new BusinessRepository();
+        globals.currentBusinessId = await _businessRepo.getBusinessId();
         yield AuthenticatedAuthState(firebaseUser.displayName);
       }
     } catch (_) {

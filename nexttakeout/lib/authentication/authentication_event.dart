@@ -43,12 +43,8 @@ class LoginInWithGoogleAuthEvent extends AuthEvent {
       // if not found user in database then it's new user
       if (foundUser == null) {
         await _authRepository.addUserFromFirebaseUser(firebaseUser);
-        // if new user then go to register page
-        yield NewUserCreatedAuthState(firebaseUser.displayName);
-      } else {
-        // if existing user then show as authenticated
-        yield AuthenticatedAuthState(firebaseUser.displayName);
       }
+      yield AuthenticatedAuthState(firebaseUser.displayName);
     } catch (_) {
       //TODO: catch failed login
       //yield LogInFailureState();

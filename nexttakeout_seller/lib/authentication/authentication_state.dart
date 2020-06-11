@@ -91,7 +91,7 @@ class InAuthState extends AuthState {
     return InAuthState();
   }
 }
-
+    
 class ErrorAuthState extends AuthState {
   final String errorMessage;
 

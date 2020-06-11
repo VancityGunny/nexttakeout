@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexttakeout_seller/authentication/authentication_bloc.dart';
+import 'package:nexttakeout_seller/home_screen.dart';
 
 import 'authentication/index.dart';
 import 'authentication/login_screen.dart';
@@ -118,13 +119,14 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               // if authenticated then show home screen
               if (currentState is AuthenticatedAuthState) {
-                return Text('This is home page');
+                return HomeScreen();
               }
               return Center(
                 child: CircularProgressIndicator(),
               );
             }),
       )),
+      
     );
   }
 }
