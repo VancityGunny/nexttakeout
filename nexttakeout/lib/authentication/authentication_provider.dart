@@ -36,8 +36,9 @@ class AuthProvider {
     if (foundUsers.documents.length <= 0) {
       return null;
     }
-
-    return UserModel.fromJson(foundUsers.documents.first.data);
+    UserModel foundUser = UserModel.fromJson(foundUsers.documents.first.data);
+    foundUser.id = foundUsers.documents.first.documentID;
+    return foundUser;
   }
 
   Future<UserModel> getUserByEmail(String email) async {

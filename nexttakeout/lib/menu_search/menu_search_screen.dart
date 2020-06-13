@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexttakeout/business/business_model.dart';
+import 'package:nexttakeout/menu/menu_model.dart';
+import 'package:nexttakeout/menu/menu_repository.dart';
 import 'package:nexttakeout/menu_search/index.dart';
 import 'package:nexttakeout/payment/index.dart';
 
@@ -68,40 +71,78 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
                       itemCount: currentState.businesses.length,
                       itemBuilder: (context, index) {
-                        return Card(
-                          child: Column(
-                            children: <Widget>[
-                              Expanded(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: (currentState
-                                              .businesses[index].photoUrl ==
-                                          null)
-                                      ? Text('No Image')
-                                      : Image.network(currentState
-                                          .businesses[index].photoUrl),
-                                ),
+                        return Container(
+                          height: 150.0,
+                          child: Card(
+                              child: Container(
+                            alignment: Alignment.bottomCenter,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: (currentState
+                                            .businesses[index].photoUrl ==
+                                        null)
+                                    ? Image.asset('graphics/blankshop.jpg')
+                                        .image
+                                    : Image.network(currentState
+                                            .businesses[index].photoUrl)
+                                        .image,
+                                fit: BoxFit.fitWidth,
+                                alignment: Alignment.center,
                               ),
-                              Container(
-                                  width: 150.0,
-                                  child: Text(currentState
-                                      .businesses[index].businessName)),
-                              RaisedButton(
-                                onPressed: () {
-                                  //order payment page
-                                  _gotoPaymentPage(
-                                      currentState.businesses[index].id);
-                                },
-                                child: Text('Order Now'),
-                              )
-                            ],
-                          ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Container(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                        currentState
+                                            .businesses[index].businessName,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                          shadows: <Shadow>[
+                                            Shadow(
+                                              offset: Offset(2.0, 2.0),
+                                              blurRadius: 2.0,
+                                              color: Color.fromARGB(
+                                                  125, 0, 0, 255),
+                                            ),
+                                          ],
+                                        ))),
+                                Expanded(child: Text('')),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    RaisedButton(
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        //View menu
+                                        _viewMenu(
+                                            currentState.businesses[index]);
+                                      },
+                                      child: Text('View Menu'),
+                                    ),
+                                    RaisedButton(
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        //order payment page
+                                        _gotoPaymentPage(
+                                            currentState.businesses[index].id);
+                                      },
+                                      child: Text('Order Now'),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          )),
                         );
                       },
                     ),
@@ -139,5 +180,33 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
         return PaymentPage(businessId);
       }),
     );
+  }
+
+  void _viewMenu(BusinessModel business) async {
+    //load menu
+
+    MenuRepository menuRepo = new MenuRepository();
+    List<MenuModel> businessMenu = await menuRepo.fetchMenuItems(business.id);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+              title: Text(business.businessName + "'s Menu"),
+              children: businessMenu.map((e) {
+                return SimpleDialogOption(
+                    child: Card(
+                  child: Column(
+                    children: <Widget>[
+                      Image.network(e.photoUrl),
+                      Text(
+                        e.name,
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ));
+              }).toList());
+        });
   }
 }

@@ -54,6 +54,13 @@ Future<void> chargeCard(CardDetails result, String orderId) async {
 
   var responseBody = json.decode(response.body);
   if (response.statusCode == 200) {
+    if(responseBody["payment"]["status"]=="COMPLETED")
+    {
+      return;
+    }
+    else{
+      throw ChargeException("Payment declined");
+    }
     return;
   } else {
     throw ChargeException(responseBody["errorMessage"]);

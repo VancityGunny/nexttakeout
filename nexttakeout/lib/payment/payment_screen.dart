@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexttakeout/menu/menu_repository.dart';
+import 'package:nexttakeout/order/order_model.dart';
 import 'package:nexttakeout/payment/index.dart';
 import 'package:nexttakeout/common/transaction_service.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 import 'package:square_in_app_payments/models.dart';
+import 'package:uuid/uuid.dart';
+import 'package:nexttakeout/common/global_object.dart' as globals;
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen(
@@ -121,6 +125,43 @@ class PaymentScreenState extends State<PaymentScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Container(
+                        width: 150.0,
+                        child: Column(
+                          children: <Widget>[
+                            Image.asset('graphics/plates.png'),
+                            OutlineButton(
+                              onPressed: () async {
+                                    //create new order and send it
+                                    MenuRepository menuRepo = new MenuRepository();
+                                    OrderModel newOrder = await menuRepo.placeNewOrder(widget._businessId, '8PACKS', 80.0);
+
+                              },
+                              child: Text('Buy 8 packs'),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                          width: 150.0,
+                          child: Column(
+                            children: <Widget>[
+                              Image.asset('graphics/plates.png'),
+                              OutlineButton(
+                                onPressed: () async {
+                                   //create new order and send it
+                                    MenuRepository menuRepo = new MenuRepository();
+                                    OrderModel newOrder = await menuRepo.placeNewOrder(widget._businessId, '16PACKS', 150.0);
+                                },
+                                child: Text('Buy 16 packs'),
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
                   Text(currentState.hello),
                   Text('Flutter files: done'),
                   RaisedButton(

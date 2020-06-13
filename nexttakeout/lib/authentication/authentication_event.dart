@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:nexttakeout/authentication/index.dart';
 import 'package:meta/meta.dart';
 import 'package:nexttakeout/business/business_model.dart';
+import 'package:nexttakeout/common/global_object.dart' as globals;
 
 @immutable
 abstract class AuthEvent {
@@ -76,12 +77,15 @@ class LoadAuthEvent extends AuthEvent {
         final firebaseUser = await _authRepository.getCurrentUser();
         final user = await _authRepository.getUserByUid(firebaseUser.uid);
         if (user != null) {
+          globals.currentUserId = user.id;
           yield AuthenticatedAuthState(user.displayName);
+        } else {
+          yield InAuthState();
         }
+        // if not found user then create it
+      } else {
+        yield InAuthState();
       }
-
-      _authRepository.test(isError);
-      yield InAuthState();
     } catch (_, stackTrace) {
       developer.log('$_',
           name: 'LoadAuthEvent', error: _, stackTrace: stackTrace);
