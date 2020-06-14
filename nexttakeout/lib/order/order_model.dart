@@ -54,7 +54,7 @@ class OrderModel extends Equatable {
         json['price'] as double,
         json['paymentId'] as String,
         json['receiptNumber'] as String,
-        json['purchaseDate'] as DateTime);
+        json['purchaseDate'].toDate() as DateTime);
   }
 
   Map<String, dynamic> toJson() {

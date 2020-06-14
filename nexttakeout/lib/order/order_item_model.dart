@@ -47,8 +47,8 @@ class OrderItemModel extends Equatable {
         json['orderItemId'] as String,
         json['orderId'] as String,
         MenuModel.fromJson(json['menuOrdered']),
-        json['orderedDate'] as DateTime,
-        json['pickupDate'] as DateTime,
+        json['orderedDate'].toDate() as DateTime,
+        json['pickupDate'].toDate() as DateTime,
         json['orderStatus'] as bool);
   }
 

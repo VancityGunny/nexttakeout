@@ -16,6 +16,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:nexttakeout/order/order_model.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,20 +24,19 @@ import 'package:http/http.dart' as http;
 // e.g. https://server-host.com
 String chargeServerHost = "https://connect.squareupsandbox.com/v2";
 String chargeUrl = "$chargeServerHost/payments";
-    String squareAuth =
-        'Bearer EAAAEKVcn4lLCbRc8HxfR7T2usPGUNaxIpoI2M72FpQEIXc3hfBZFVSgCGngsKOz'; // + base64Encode(utf8.encode('$yelpApiKey'));
+String squareAuth =
+    'Bearer EAAAEKVcn4lLCbRc8HxfR7T2usPGUNaxIpoI2M72FpQEIXc3hfBZFVSgCGngsKOz'; // + base64Encode(utf8.encode('$yelpApiKey'));
 
 class ChargeException implements Exception {
   String errorMessage;
   ChargeException(this.errorMessage);
 }
 
-Future<void> chargeCard(CardDetails result, String orderId) async {
-  var body = jsonEncode({"source_id": result.nonce,
-   "amount_money": {
-      "amount": 100,
-      "currency": "CAD"},
-      "idempotency_key": orderId,
+Future<dynamic> chargeCard(OrderModel newOrder, CardDetails result) async {
+  var body = jsonEncode({
+    "source_id": result.nonce,
+    "amount_money": {"amount": newOrder.price, "currency": "CAD"},
+    "idempotency_key": newOrder.orderId,
     "accept_partial_authorization": false,
     "autocomplete": true,
     "location_id": "4D2FG72SP1QHV"
@@ -54,14 +54,12 @@ Future<void> chargeCard(CardDetails result, String orderId) async {
 
   var responseBody = json.decode(response.body);
   if (response.statusCode == 200) {
-    if(responseBody["payment"]["status"]=="COMPLETED")
-    {
-      return;
-    }
-    else{
+    if (responseBody["payment"]["status"] == "COMPLETED") {
+      return responseBody;
+    } else {
       throw ChargeException("Payment declined");
     }
-    return;
+    return responseBody;
   } else {
     throw ChargeException(responseBody["errorMessage"]);
   }

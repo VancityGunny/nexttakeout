@@ -37,9 +37,11 @@ class PaymentScreenState extends State<PaymentScreen> {
   /** 
   * An event listener to start card entry flow
   */
-  Future<void> _onStartCardEntryFlow() async {
+  Future<void> _onStartCardEntryFlow(OrderModel newOrder) async {
     await InAppPayments.startCardEntryFlow(
-        onCardNonceRequestSuccess: _onCardEntryCardNonceRequestSuccess,
+        onCardNonceRequestSuccess: (CardDetails result) {
+          _onCardEntryCardNonceRequestSuccess(result, newOrder);
+        },
         onCardEntryCancel: _onCancelCardEntryFlow);
   }
 
@@ -54,16 +56,18 @@ class PaymentScreenState extends State<PaymentScreen> {
   * Callback when successfully get the card nonce details for processig
   * card entry is still open and waiting for processing card nonce details
   */
-  void _onCardEntryCardNonceRequestSuccess(CardDetails result) async {
+  void _onCardEntryCardNonceRequestSuccess(
+      CardDetails result, OrderModel newOrder) async {
     try {
       // take payment with the card nonce details
       // you can take a charge
-      await chargeCard(result, widget._businessId);
+      var paymentResponse = await chargeCard(newOrder, result);
 
       // payment finished successfully
       // you must call this method to close card entry
-      InAppPayments.completeCardEntry(
-          onCardEntryComplete: _onCardEntryComplete);
+      InAppPayments.completeCardEntry(onCardEntryComplete: () {
+        _onCardEntryComplete(paymentResponse, newOrder);
+      });
     } on Exception catch (ex) {
       // payment failed to complete due to error
       // notify card entry to show processing error
@@ -74,8 +78,14 @@ class PaymentScreenState extends State<PaymentScreen> {
   /**
   * Callback when the card entry is closed after call 'completeCardEntry'
   */
-  void _onCardEntryComplete() {
+  void _onCardEntryComplete(dynamic paymentResponse, OrderModel newOrder) {
     // Update UI to notify user that the payment flow is finished successfully
+    var paymentResp = paymentResponse['payment'];
+    //update the order to marked as paid
+    MenuRepository menuRepo = new MenuRepository();
+    newOrder.paymentId = paymentResp['id'].toString();
+    newOrder.receiptNumber = paymentResp['receipt_number'].toString();
+    menuRepo.updateOrder(newOrder);
   }
 
   @override
@@ -135,10 +145,12 @@ class PaymentScreenState extends State<PaymentScreen> {
                             Image.asset('graphics/plates.png'),
                             OutlineButton(
                               onPressed: () async {
-                                    //create new order and send it
-                                    MenuRepository menuRepo = new MenuRepository();
-                                    OrderModel newOrder = await menuRepo.placeNewOrder(widget._businessId, '8PACKS', 80.0);
-
+                                //create new order and send it
+                                MenuRepository menuRepo = new MenuRepository();
+                                OrderModel newOrder =
+                                    await menuRepo.placeNewOrder(
+                                        widget._businessId, '8PACKS', 80.0);
+                                _onStartCardEntryFlow(newOrder);
                               },
                               child: Text('Buy 8 packs'),
                             )
@@ -152,9 +164,13 @@ class PaymentScreenState extends State<PaymentScreen> {
                               Image.asset('graphics/plates.png'),
                               OutlineButton(
                                 onPressed: () async {
-                                   //create new order and send it
-                                    MenuRepository menuRepo = new MenuRepository();
-                                    OrderModel newOrder = await menuRepo.placeNewOrder(widget._businessId, '16PACKS', 150.0);
+                                  //create new order and send it
+                                  MenuRepository menuRepo =
+                                      new MenuRepository();
+                                  OrderModel newOrder =
+                                      await menuRepo.placeNewOrder(
+                                          widget._businessId, '16PACKS', 150.0);
+                                  _onStartCardEntryFlow(newOrder);
                                 },
                                 child: Text('Buy 16 packs'),
                               )
@@ -166,7 +182,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                   Text('Flutter files: done'),
                   RaisedButton(
                     onPressed: () {
-                      _onStartCardEntryFlow();
+                      // _onStartCardEntryFlow();
                     },
                     child: Text('Pay Now'),
                   ),

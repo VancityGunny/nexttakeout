@@ -22,4 +22,8 @@ class MenuRepository {
     return await _menuProvider.placeOrder(
         globals.currentUserId, businessId, productCode, price);
   }
+
+  void updateOrder(OrderModel newOrder) {
+      _menuProvider.updateOrder(newOrder);
+  }
 }

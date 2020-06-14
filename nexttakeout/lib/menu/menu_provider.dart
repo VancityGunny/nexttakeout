@@ -54,4 +54,36 @@ class MenuProvider {
 
     return newOrder;
   }
+
+  Future<void> updateOrder(OrderModel newOrder) async {
+    //update order
+
+    var businessObj =
+        _firestore.collection('/businesses').document(newOrder.businessId);
+    List<OrderModel> existingOrders = new List<OrderModel>();
+    var orderCollection = (await businessObj.get()).data['orders'].forEach((f) {
+      OrderModel foundOrder = OrderModel.fromJson(f);
+      if (foundOrder.orderId == newOrder.orderId) {
+        //update this order
+        existingOrders.add(newOrder);
+      } else {
+        existingOrders.add(foundOrder);
+      }
+    });
+    businessObj.updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
+
+    //now update the same for the user order
+    var customerObj = _firestore.collection('/users').document(newOrder.userId);
+    existingOrders = new List<OrderModel>();
+    orderCollection = (await customerObj.get()).data['orders'].forEach((f) {
+      OrderModel foundOrder = OrderModel.fromJson(f);
+      if (foundOrder.orderId == newOrder.orderId) {
+        //update this order
+        existingOrders.add(newOrder);
+      } else {
+        existingOrders.add(foundOrder);
+      }
+    });
+    customerObj.updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
+  }
 }
