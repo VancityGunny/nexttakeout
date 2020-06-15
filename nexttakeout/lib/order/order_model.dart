@@ -36,14 +36,16 @@ class OrderModel extends Equatable {
   String paymentId;
   String receiptNumber;
   DateTime purchaseDate;
+  int maxQuantity;
+  int usedQuantity;
   
 
   OrderModel(this.orderId, this.userId, this.businessId,this.productCode, this.price, this.paymentId,
-      this.receiptNumber, this.purchaseDate);
+      this.receiptNumber, this.purchaseDate, this.usedQuantity, this.maxQuantity);
 
   @override
   List<Object> get props =>
-      [orderId, userId, businessId, productCode, price, paymentId, receiptNumber, purchaseDate];
+      [orderId, userId, businessId, productCode, price, paymentId, receiptNumber, purchaseDate, usedQuantity, maxQuantity];
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
@@ -54,7 +56,10 @@ class OrderModel extends Equatable {
         json['price'] as double,
         json['paymentId'] as String,
         json['receiptNumber'] as String,
-        json['purchaseDate'].toDate() as DateTime);
+        json['purchaseDate'].toDate() as DateTime,
+        json['usedQuantity'] as int,
+        json['maxQuantity'] as int,
+        );
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +72,8 @@ class OrderModel extends Equatable {
     data['paymentId'] = paymentId;
     data['receiptNumber'] = receiptNumber;
     data['purchaseDate'] = purchaseDate;
+    data['usedQuantity'] = usedQuantity;
+    data['maxQuantity'] = maxQuantity;
     return data;
   }
 }

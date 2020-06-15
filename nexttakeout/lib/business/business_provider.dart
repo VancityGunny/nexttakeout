@@ -46,14 +46,22 @@ class BusinessProvider {
   }
 
   Future<List<BusinessModel>> getNearbyBusinesses() async {
-    var allBusinesses = await _firestore.collection('/businesses').getDocuments();
-    if(allBusinesses.documents.length>0)
-    {
-      return allBusinesses.documents.map((e) => BusinessModel.fromDocumentSnapshot(e)).toList();
-    }
-    else{
+    var allBusinesses =
+        await _firestore.collection('/businesses').getDocuments();
+    if (allBusinesses.documents.length > 0) {
+      return allBusinesses.documents
+          .map((e) => BusinessModel.fromDocumentSnapshot(e))
+          .toList();
+    } else {
       return List<BusinessModel>();
     }
+  }
 
+  Future<BusinessModel> getBusinessById(String businessId) async {
+    var foundBusiness =
+        await _firestore.collection('/businesses').document(businessId).get();
+    return (foundBusiness == null)
+        ? null
+        : BusinessModel.fromDocumentSnapshot(foundBusiness);
   }
 }

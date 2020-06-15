@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexttakeout/menu/menu_model.dart';
+import 'package:nexttakeout/order/order_item_model.dart';
 import 'package:nexttakeout/order/order_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -35,11 +36,11 @@ class MenuProvider {
   }
 
   Future<OrderModel> placeOrder(String userId, String businessId,
-      String productCode, double price) async {
+      String productCode, double price, int maxQuanity) async {
     Uuid uuid = new Uuid();
     String newOrderId = uuid.v1();
     OrderModel newOrder = new OrderModel(newOrderId, userId, businessId,
-        productCode, price, null, null, DateTime.now());
+        productCode, price, null, null, DateTime.now(), 0, maxQuanity);
     // write order to both business and customer collection
     var businessObj =
         await _firestore.collection('/businesses').document(businessId);
@@ -70,7 +71,8 @@ class MenuProvider {
         existingOrders.add(foundOrder);
       }
     });
-    businessObj.updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
+    businessObj
+        .updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
 
     //now update the same for the user order
     var customerObj = _firestore.collection('/users').document(newOrder.userId);
@@ -84,6 +86,22 @@ class MenuProvider {
         existingOrders.add(foundOrder);
       }
     });
-    customerObj.updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
+    customerObj
+        .updateData({'orders': existingOrders.map((e) => e.toJson()).toList()});
+  }
+
+  Future<void> placeNewOrderItem(
+      String businessId, String userId, OrderItemModel newOrderItem) async {
+    var businessObj =
+        _firestore.collection('/businessOrders').document(businessId);
+    businessObj.setData({
+      'orderItems': FieldValue.arrayUnion([newOrderItem.toJson()])
+    }, merge: true);
+    var customerObj = _firestore.collection('/userOrders').document(userId);
+    customerObj.setData({
+      'orderItems': FieldValue.arrayUnion([newOrderItem.toJson()])
+    }, merge:true);
+    //update order quantity left
+    
   }
 }

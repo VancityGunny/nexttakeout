@@ -34,7 +34,7 @@ class OrderItemModel extends Equatable {
   MenuModel menuOrdered;
   DateTime orderedDate;
   DateTime pickupDate;
-  bool orderStatus; // Pending, Ready, Completed
+  String orderStatus; // Pending, Ready, Completed
   
   OrderItemModel(this.orderItemId, this.orderId, this.menuOrdered, this.orderedDate, this.pickupDate, this.orderStatus);
 
@@ -49,7 +49,7 @@ class OrderItemModel extends Equatable {
         MenuModel.fromJson(json['menuOrdered']),
         json['orderedDate'].toDate() as DateTime,
         json['pickupDate'].toDate() as DateTime,
-        json['orderStatus'] as bool);
+        json['orderStatus'] as String);
   }
 
   Map<String, dynamic> toJson() {

@@ -4,6 +4,7 @@ import 'package:nexttakeout/menu/menu_repository.dart';
 import 'package:nexttakeout/order/order_model.dart';
 import 'package:nexttakeout/payment/index.dart';
 import 'package:nexttakeout/common/transaction_service.dart';
+import 'package:nexttakeout/place_order/index.dart';
 import 'package:square_in_app_payments/in_app_payments.dart';
 import 'package:square_in_app_payments/models.dart';
 import 'package:uuid/uuid.dart';
@@ -86,6 +87,13 @@ class PaymentScreenState extends State<PaymentScreen> {
     newOrder.paymentId = paymentResp['id'].toString();
     newOrder.receiptNumber = paymentResp['receipt_number'].toString();
     menuRepo.updateOrder(newOrder);
+    // goto order selection page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return PlaceOrderPage();
+      }),
+    );
   }
 
   @override
@@ -149,7 +157,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                                 MenuRepository menuRepo = new MenuRepository();
                                 OrderModel newOrder =
                                     await menuRepo.placeNewOrder(
-                                        widget._businessId, '8PACKS', 80.0);
+                                        widget._businessId, '8PACKS', 80.0, 8);
                                 _onStartCardEntryFlow(newOrder);
                               },
                               child: Text('Buy 8 packs'),
@@ -169,7 +177,10 @@ class PaymentScreenState extends State<PaymentScreen> {
                                       new MenuRepository();
                                   OrderModel newOrder =
                                       await menuRepo.placeNewOrder(
-                                          widget._businessId, '16PACKS', 150.0);
+                                          widget._businessId,
+                                          '16PACKS',
+                                          150.0,
+                                          16);
                                   _onStartCardEntryFlow(newOrder);
                                 },
                                 child: Text('Buy 16 packs'),

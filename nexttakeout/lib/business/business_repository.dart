@@ -25,4 +25,7 @@ class BusinessRepository {
     //TODO: implement actual within range
     return await _businessProvider.getNearbyBusinesses();
   }
+  Future<BusinessModel> getBusinessById(String businessId) async{
+    return await _businessProvider.getBusinessById(businessId);
+  }
 }
