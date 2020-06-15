@@ -1,3 +1,4 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -96,19 +97,22 @@ class PickupOrderScreenState extends State<PickupOrderScreen> {
                                   ),
                                   Text(
                                     currentOrderItems[index]
-                                        .pickupDate
-                                        .day
-                                        .toString() + ' ' + new DateFormat.MMM().format(
-                                        currentOrderItems[index].pickupDate),
+                                            .pickupDate
+                                            .day
+                                            .toString() +
+                                        ' ' +
+                                        new DateFormat.MMM().format(
+                                            currentOrderItems[index]
+                                                .pickupDate),
                                     style: TextStyle(fontSize: 15.0),
                                   ),
-                                  
                                 ],
                               ),
                             ),
                           ),
                           Card(
-                              child: Column(
+                              child: Expanded(
+                                  child: Column(
                             children: <Widget>[
                               Image.network(currentOrderItems[index]
                                   .menuOrdered
@@ -131,8 +135,20 @@ class PickupOrderScreenState extends State<PickupOrderScreen> {
                                     backgroundColor: getOrderColors(
                                         currentOrderItems[index].orderStatus)),
                               ),
+                              Container(
+                                color: Colors.white,
+                                child: BarcodeWidget(
+                                  barcode: Barcode
+                                      .qrCode(), // Barcode type and settings
+                                  data: currentOrderItems[index]
+                                      .orderItemId
+                                      .toString(), // Content
+                                  width: 200,
+                                  height: 200,
+                                ),
+                              ),
                             ],
-                          ))
+                          )))
                         ],
                       );
                     });
