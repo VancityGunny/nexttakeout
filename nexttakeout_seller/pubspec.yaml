@@ -42,6 +42,7 @@ dependencies:
   geoflutterfire: ^2.1.0
   image_picker: ^0.6.7+1
   path_provider: ^1.6.9
+  rxdart: ^0.23.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

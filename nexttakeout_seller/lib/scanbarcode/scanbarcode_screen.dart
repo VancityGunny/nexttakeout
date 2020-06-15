@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexttakeout_seller/order/order_item_model.dart';
 import 'package:nexttakeout_seller/scanbarcode/index.dart';
 
 class ScanbarcodeScreen extends StatefulWidget {
@@ -33,6 +34,7 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    widget._scanbarcodeBloc.initStream();
     return BlocBuilder<ScanbarcodeBloc, ScanbarcodeState>(
         bloc: widget._scanbarcodeBloc,
         builder: (
@@ -61,11 +63,41 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
               ],
             ));
           }
-           if (currentState is InScanbarcodeState) {
+          if (currentState is InScanbarcodeState) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Expanded(
+                      child: StreamBuilder(
+                          stream:
+                              widget._scanbarcodeBloc.allTodayOrderItems.stream,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<OrderItemModel>> snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return Scrollbar(
+                              child: ListView.builder(
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var tempOrderItems = snapshot.data[index];
+                                  return Column(
+                                    children: <Widget>[
+                                      Text('Menu Ordered: ' +
+                                          tempOrderItems.menuOrdered.name),
+                                      Text('Pickup Date: ' +
+                                          tempOrderItems.pickupDate.toString()),
+                                      Text('Status: ' +
+                                          tempOrderItems.orderStatus)
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          })),
                   Text(currentState.hello),
                   Text('Flutter files: done'),
                   Padding(
@@ -81,9 +113,8 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
             );
           }
           return Center(
-              child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(),
           );
-          
         });
   }
 

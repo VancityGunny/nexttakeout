@@ -80,11 +80,13 @@ class MenuScreenState extends State<MenuScreen> {
                         return Card(
                           child: Column(
                             children: <Widget>[
-                              Expanded(
+                              Container(
+                                width: 150.0,
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Image.network(
-                                      currentState.menuItems[index].photoUrl),
+                                      currentState.menuItems[index].photoUrl,
+                                      width: 150.0, height:75.0),
                                 ),
                               ),
                               Container(
@@ -109,11 +111,13 @@ class MenuScreenState extends State<MenuScreen> {
                     onPressed: () {
                       // update menu item
                       openNewMenuItem().then((value) {
-                        MenuModel newMenuItem = value;
-                        var updatedMenuItems = currentState.menuItems;
-                        updatedMenuItems.add(newMenuItem);
-                        widget._menuBloc
-                            .add(UpdateMenuItemsEvent(updatedMenuItems));
+                        if (value != null) {
+                          MenuModel newMenuItem = value;
+                          var updatedMenuItems = currentState.menuItems;
+                          updatedMenuItems.add(newMenuItem);
+                          widget._menuBloc
+                              .add(UpdateMenuItemsEvent(updatedMenuItems));
+                        }
                       });
                     },
                     child: Text('Add Menu Item'),
