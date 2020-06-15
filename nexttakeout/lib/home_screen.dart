@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(
               Icons.shop,
             ),
-            title: Text('Order'),
+            title: Text('Place Order'),
           )
         ],
         onTap: (int index) {

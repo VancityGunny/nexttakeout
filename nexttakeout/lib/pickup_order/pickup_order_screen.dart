@@ -85,34 +85,52 @@ class PickupOrderScreenState extends State<PickupOrderScreen> {
                     itemCount: currentOrderItems.length,
                     itemBuilder: (context, index) {
                       return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Container(
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    new DateFormat.E().format(
-                                        currentOrderItems[index].pickupDate),
-                                    style: TextStyle(fontSize: 25.0),
-                                  ),
-                                  Text(
-                                    currentOrderItems[index]
-                                            .pickupDate
-                                            .day
-                                            .toString() +
-                                        ' ' +
-                                        new DateFormat.MMM().format(
-                                            currentOrderItems[index]
-                                                .pickupDate),
-                                    style: TextStyle(fontSize: 15.0),
-                                  ),
-                                ],
+                          Column(
+                            children: <Widget>[
+                              Card(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      new DateFormat.E().format(
+                                          currentOrderItems[index].pickupDate),
+                                      style: TextStyle(fontSize: 25.0),
+                                    ),
+                                    Text(
+                                      currentOrderItems[index]
+                                              .pickupDate
+                                              .day
+                                              .toString() +
+                                          ' ' +
+                                          new DateFormat.MMM().format(
+                                              currentOrderItems[index]
+                                                  .pickupDate),
+                                      style: TextStyle(fontSize: 15.0),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                              Text(
+                                'Order Status:',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    backgroundColor: getOrderColors(
+                                        currentOrderItems[index].orderStatus)),
+                              ),
+                              Text(
+                                currentOrderItems[index].orderStatus,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                    color: Colors.black,
+                                    backgroundColor: getOrderColors(
+                                        currentOrderItems[index].orderStatus)),
+                              ),
+                            ],
                           ),
                           Card(
-                              child: Expanded(
-                                  child: Column(
+                              child: Column(
                             children: <Widget>[
                               Image.network(currentOrderItems[index]
                                   .menuOrdered
@@ -127,14 +145,6 @@ class PickupOrderScreenState extends State<PickupOrderScreen> {
                                       .toString()),
                               Text('Order Item:' +
                                   currentOrderItems[index].menuOrdered.name),
-                              Text(
-                                'Order Status:' +
-                                    currentOrderItems[index].orderStatus,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    backgroundColor: getOrderColors(
-                                        currentOrderItems[index].orderStatus)),
-                              ),
                               Container(
                                 color: Colors.white,
                                 child: BarcodeWidget(
@@ -148,7 +158,7 @@ class PickupOrderScreenState extends State<PickupOrderScreen> {
                                 ),
                               ),
                             ],
-                          )))
+                          ))
                         ],
                       );
                     });
