@@ -103,7 +103,6 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                                         currentState
                                             .businesses[index].businessName,
                                         style: TextStyle(
-                                          color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20.0,
                                           shadows: <Shadow>[
@@ -121,7 +120,6 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     RaisedButton(
-                                      color: Colors.white,
                                       onPressed: () {
                                         //View menu
                                         _viewMenu(
@@ -130,13 +128,12 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                                       child: Text('View Menu'),
                                     ),
                                     RaisedButton(
-                                      color: Colors.white,
                                       onPressed: () {
                                         //order payment page
                                         _gotoPaymentPage(
                                             currentState.businesses[index].id);
                                       },
-                                      child: Text('Order Now'),
+                                      child: Text('Buy Meal Package'),
                                     )
                                   ],
                                 )
@@ -145,18 +142,6 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                           )),
                         );
                       },
-                    ),
-                  ),
-                  Text((currentState.businesses == null)
-                      ? '0'
-                      : currentState.businesses.length.toString()),
-                  Text('Flutter files: done'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => _load(true),
                     ),
                   ),
                 ],

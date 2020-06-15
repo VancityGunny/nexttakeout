@@ -85,38 +85,7 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                     onDateSelected: (selectedDate) {
                       currentDate = selectedDate;
                       // check the date for outstanding order and show it
-                      var allOrderItems =
-                          widget._placeOrderBloc.allOrderItems.value;
-                      if (allOrderItems != null) {
-                        var foundOrderItems = allOrderItems.where((x) =>
-                            x.pickupDate.day == selectedDate.day &&
-                            x.pickupDate.month == selectedDate.month &&
-                            x.pickupDate.year == selectedDate.year);
-
-                        setState(() {
-                          this.currentOrderItems = foundOrderItems.toList();
-                        });
-                      }
-
-                      // also eligible restaurant that user can order from
-                      var allOrders =
-                          widget._placeOrderBloc.availableOrders.value;
-                      if (allOrders != null) {
-                        var foundBusinessId = allOrders.first.businessId;
-                        BusinessRepository businessRepo =
-                            new BusinessRepository();
-                        businessRepo
-                            .getBusinessById(foundBusinessId)
-                            .then((value) {
-                          setState(() {
-                            this.currentBusiness = value;
-                          });
-                        });
-                        //grab menu from business to order from
-                        setState(() {
-                          this.currentOrders = allOrders;
-                        });
-                      }
+                      refreshMealPackages(selectedDate);
                     },
                     firstDate: DateTime.now().add(
                         new Duration(days: 1)), // only allow order 1 day before
@@ -129,73 +98,84 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                   ),
                   Expanded(
                       flex: 1,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: currentOrders.length,
-                          itemBuilder: (context, index) {
-                            // get business for this order
+                      child: (currentOrders.length == 0 && this.currentDate!=null)
+                          ? Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                  'You do not have meal packages available to order. Please purchase meal packages from restaurant'))
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: currentOrders.length,
+                              itemBuilder: (context, index) {
+                                // get business for this order
 
-                            var foundBusinessId =
-                                currentOrders[index].businessId;
-                            BusinessRepository businessRepo =
-                                new BusinessRepository();
-                            var foundBusiness =
-                                businessRepo.getBusinessById(foundBusinessId);
-                            return FutureBuilder(
-                              future: foundBusiness,
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<BusinessModel> snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                return Container(
-                                    child: Card(
-                                        child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      colorFilter: ColorFilter.mode(
-                                          Colors.black.withOpacity(0.7),
-                                          BlendMode.dstATop),
-                                      image: (snapshot.data.photoUrl == null)
-                                          ? Image.asset(
-                                                  'graphics/blankshop.jpg')
-                                              .image
-                                          : Image.network(
-                                                  snapshot.data.photoUrl)
-                                              .image,
-                                      fit: BoxFit.cover,
-                                      alignment: Alignment.center,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(snapshot.data.businessName),
-                                      Text(currentOrders[index].productCode),
-                                      RaisedButton(
-                                        color: Colors.blue,
-                                        onPressed: () {
-                                          //View menu
-                                          orderThis(this.currentBusiness,
-                                              currentOrders[index]);
-                                        },
-                                        child: Text('Place an Order'),
+                                var foundBusinessId =
+                                    currentOrders[index].businessId;
+                                BusinessRepository businessRepo =
+                                    new BusinessRepository();
+                                var foundBusiness = businessRepo
+                                    .getBusinessById(foundBusinessId);
+                                return FutureBuilder(
+                                  future: foundBusiness,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<BusinessModel> snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+
+                                    return Container(
+                                        child: Card(
+                                            child: Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          colorFilter: ColorFilter.mode(
+                                              Colors.black.withOpacity(0.7),
+                                              BlendMode.dstATop),
+                                          image: (snapshot.data.photoUrl ==
+                                                  null)
+                                              ? Image.asset(
+                                                      'graphics/blankshop.jpg')
+                                                  .image
+                                              : Image.network(
+                                                      snapshot.data.photoUrl)
+                                                  .image,
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                        ),
                                       ),
-                                      Text(currentOrders[index]
-                                              .usedQuantity
-                                              .toString() +
-                                          '/' +
-                                          currentOrders[index]
-                                              .maxQuantity
-                                              .toString() +
-                                          " meals used")
-                                    ],
-                                  ),
-                                )));
-                              },
-                            );
-                          })),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text(snapshot.data.businessName),
+                                          Text(
+                                              currentOrders[index].productCode),
+                                          RaisedButton(
+                                            color: Colors.blue,
+                                            onPressed: () {
+                                              //View menu
+                                              orderThis(this.currentBusiness,
+                                                  currentOrders[index]);
+                                            },
+                                            child: Text('Place an Order'),
+                                          ),
+                                          Text(currentOrders[index]
+                                                  .usedQuantity
+                                                  .toString() +
+                                              '/' +
+                                              currentOrders[index]
+                                                  .maxQuantity
+                                                  .toString() +
+                                              " meals used")
+                                        ],
+                                      ),
+                                    )));
+                                  },
+                                );
+                              })),
+                  (this.currentDate == null)
+                      ? Text('Please select date')
+                      : Text('Today Menu'),
                   Expanded(
                       flex: 3,
                       child: StreamBuilder(
@@ -211,6 +191,12 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                               .where((element) =>
                                   element.pickupDate == this.currentDate)
                               .toList();
+                          if (currentOrderItems.length == 0) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text('Nothing here'),
+                            );
+                          }
                           return ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: currentOrderItems.length,
@@ -251,6 +237,36 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
         });
   }
 
+  void refreshMealPackages(DateTime selectedDate) {
+    var allOrderItems = widget._placeOrderBloc.allOrderItems.value;
+    if (allOrderItems != null) {
+      var foundOrderItems = allOrderItems.where((x) =>
+          x.pickupDate.day == selectedDate.day &&
+          x.pickupDate.month == selectedDate.month &&
+          x.pickupDate.year == selectedDate.year);
+
+      setState(() {
+        this.currentOrderItems = foundOrderItems.toList();
+      });
+    }
+
+    // also eligible restaurant that user can order from
+    var allOrders = widget._placeOrderBloc.availableOrders.value;
+    if (allOrders != null) {
+      var foundBusinessId = allOrders.first.businessId;
+      BusinessRepository businessRepo = new BusinessRepository();
+      businessRepo.getBusinessById(foundBusinessId).then((value) {
+        setState(() {
+          this.currentBusiness = value;
+        });
+      });
+      //grab menu from business to order from
+      setState(() {
+        this.currentOrders = allOrders;
+      });
+    }
+  }
+
   void _load([bool isError = false]) {
     widget._placeOrderBloc.add(LoadPlaceOrderEvent(isError));
   }
@@ -267,39 +283,37 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
               title: Text(business.businessName + "'s Menu"),
               children: businessMenu.map((e) {
                 return SimpleDialogOption(
-                    onPressed: () {
-                      // place this menu item
-                      Uuid uuid = new Uuid();
-                      var newOrderItemId = uuid.v1();
-                      OrderItemModel newMenuOrder = new OrderItemModel(
-                          newOrderItemId,
-                          currentOrder.orderId,
-                          e,
-                          DateTime.now(),
-                          currentDate,
-                          'Pending');
-                      menuRepo.placeNewOrderItem(business.id, newMenuOrder);
-                      //update quanity of the order
-                      var updatedOrderQuantity = currentOrder;
-                      updatedOrderQuantity.usedQuantity += 1;
-                      menuRepo.updateOrder(updatedOrderQuantity);
-                      Navigator.of(context).pop();
-                      // OrderItemModel newMenuOrder = new OrderItemModel()
-                      // menuRepo.placeNewOrderItem(business.id, newOrderItem)
-                    },
                     child: Card(
-                      child: Column(
-                        children: <Widget>[
-                          Image.network(e.photoUrl),
-                          Text(
-                            e.name,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                    ));
+                  child: Column(
+                    children: <Widget>[
+                      Image.network(e.photoUrl),
+                      OutlineButton(
+                          onPressed: () {
+                            // place this menu item
+                            Uuid uuid = new Uuid();
+                            var newOrderItemId = uuid.v1();
+                            OrderItemModel newMenuOrder = new OrderItemModel(
+                                newOrderItemId,
+                                currentOrder.orderId,
+                                e,
+                                DateTime.now(),
+                                currentDate,
+                                'Pending');
+                            menuRepo.placeNewOrderItem(
+                                business.id, newMenuOrder);
+                            //update quanity of the order
+                            var updatedOrderQuantity = currentOrder;
+                            updatedOrderQuantity.usedQuantity += 1;
+                            menuRepo.updateOrder(updatedOrderQuantity);
+                            Navigator.of(context).pop();
+                            refreshMealPackages(this.currentDate);
+                            // OrderItemModel newMenuOrder = new OrderItemModel()
+                            // menuRepo.placeNewOrderItem(business.id, newOrderItem)
+                          },
+                          child: Text('Order ' + e.name)),
+                    ],
+                  ),
+                ));
               }).toList());
         });
   }

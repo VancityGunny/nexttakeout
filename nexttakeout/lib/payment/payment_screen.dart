@@ -87,6 +87,7 @@ class PaymentScreenState extends State<PaymentScreen> {
     newOrder.paymentId = paymentResp['id'].toString();
     newOrder.receiptNumber = paymentResp['receipt_number'].toString();
     menuRepo.updateOrder(newOrder);
+    Navigator.of(context).pop();
     // goto order selection page
     Navigator.push(
       context,
@@ -161,7 +162,8 @@ class PaymentScreenState extends State<PaymentScreen> {
                                 _onStartCardEntryFlow(newOrder);
                               },
                               child: Text('Buy 8 packs'),
-                            )
+                            ),
+                            Text('Include 8 meals at 80\$')
                           ],
                         ),
                       ),
@@ -184,26 +186,11 @@ class PaymentScreenState extends State<PaymentScreen> {
                                   _onStartCardEntryFlow(newOrder);
                                 },
                                 child: Text('Buy 16 packs'),
-                              )
+                              ),
+                              Text('Include 16 meals at 150\$')
                             ],
                           ))
                     ],
-                  ),
-                  Text(currentState.hello),
-                  Text('Flutter files: done'),
-                  RaisedButton(
-                    onPressed: () {
-                      // _onStartCardEntryFlow();
-                    },
-                    child: Text('Pay Now'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => _load(true),
-                    ),
                   ),
                 ],
               ),
