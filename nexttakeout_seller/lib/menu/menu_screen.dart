@@ -122,15 +122,7 @@ class MenuScreenState extends State<MenuScreen> {
                     },
                     child: Text('Add Menu Item'),
                   ),
-                  Text('Flutter files: done'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => _load(true),
-                    ),
-                  ),
+                  
                 ],
               ),
             );

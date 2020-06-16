@@ -3,10 +3,13 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nexttakeout_seller/menu/menu_model.dart';
 import 'package:nexttakeout_seller/order/index.dart';
 import 'package:nexttakeout_seller/common/global_object.dart' as globals;
 import 'package:nexttakeout_seller/order/order_item_model.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'package:collection/collection.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   // todo: check singleton for logic in project
@@ -16,8 +19,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       BehaviorSubject<List<OrderModel>>();
 
   StreamController orderItemsController;
-  final BehaviorSubject<List<OrderItemModel>> allOrderItems =
-      BehaviorSubject<List<OrderItemModel>>();
+
+  final BehaviorSubject<List<OrderSummaryModel>> allOrdersByDay =
+      BehaviorSubject<List<OrderSummaryModel>>();
 
   factory OrderBloc() {
     return _orderBlocSingleton;
@@ -33,11 +37,23 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     orderItemsController.stream.listen((event) {
       DocumentSnapshot docs = event;
       if (docs.data != null) {
-        var newOrderItemsList = new List<OrderItemModel>();
-        event.data['orderItems'].forEach((f) {
-          newOrderItemsList.add(OrderItemModel.fromJson(f));
+        var newOrderItemsList = new List<OrderSummaryModel>();
+        var newOrdersByDay =
+            groupBy(event.data['orderItems'], (t) => t['pickupDate']);
+        newOrdersByDay.entries.forEach((element) {
+          var menuItemsBreakdown =
+              groupBy(element.value, (e) => e['menuOrdered']);
+          List<OrderCountModel> orderBreakdown = new List<OrderCountModel>();
+          menuItemsBreakdown.entries.forEach((tmpMenu) {
+            orderBreakdown.add(new OrderCountModel(
+                MenuModel.fromJson(tmpMenu.key), tmpMenu.value.length));
+          });
+          var newEntry =
+              new OrderSummaryModel(element.key.toDate(), orderBreakdown);
+          newOrderItemsList.add(newEntry);
         });
-        allOrderItems.add(newOrderItemsList);
+        newOrderItemsList.sort((a, b) => a.pickupDate.compareTo(b.pickupDate));
+        allOrdersByDay.add(newOrderItemsList);
       }
     });
 
@@ -81,4 +97,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield state;
     }
   }
+}
+
+class OrderSummaryModel {
+  OrderSummaryModel(this.pickupDate, this.orders);
+  DateTime pickupDate;
+  List<OrderCountModel> orders;
+}
+
+class OrderCountModel {
+  OrderCountModel(this.menu, this.quantity);
+  MenuModel menu;
+  int quantity;
 }

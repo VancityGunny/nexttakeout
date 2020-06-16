@@ -105,9 +105,9 @@ class OrderScreenState extends State<OrderScreen> {
               ),
               Expanded(
                   child: StreamBuilder(
-                      stream: widget._orderBloc.allOrderItems.stream,
+                      stream: widget._orderBloc.allOrdersByDay.stream,
                       builder: (BuildContext context,
-                          AsyncSnapshot<List<OrderItemModel>> snapshot) {
+                          AsyncSnapshot<List<OrderSummaryModel>> snapshot) {
                         if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
@@ -117,13 +117,26 @@ class OrderScreenState extends State<OrderScreen> {
                           child: ListView.builder(
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, int index) {
-                              var tempOrderItems = snapshot.data[index];
+                              OrderSummaryModel tempOrderItems =
+                                  snapshot.data[index];
                               return Column(
                                 children: <Widget>[
-                                  Text('Menu Ordered: ' + tempOrderItems.menuOrdered.name),
-                                  Text('Pickup Date: ' + tempOrderItems.pickupDate.toString()),
-                                  Text('Status: ' +
-                                      tempOrderItems.orderStatus)
+                                  Text('Menu Ordered: ' +
+                                      tempOrderItems.orders.length.toString()),
+                                  Text('Pickup Date: ' +
+                                      tempOrderItems.pickupDate.toString()),
+                                  Row(
+                                      children: new List<Widget>.generate(
+                                          tempOrderItems.orders.length,
+                                          (itemIndex) {
+                                    return Text(tempOrderItems
+                                            .orders[itemIndex].menu.name +
+                                        ':' +
+                                        tempOrderItems
+                                            .orders[itemIndex].quantity
+                                            .toString() +
+                                        ' orders');
+                                  }))
                                 ],
                               );
                             },

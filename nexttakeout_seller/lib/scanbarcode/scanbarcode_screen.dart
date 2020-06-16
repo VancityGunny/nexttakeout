@@ -98,16 +98,7 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
                               ),
                             );
                           })),
-                  Text(currentState.hello),
-                  Text('Flutter files: done'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => _load(true),
-                    ),
-                  ),
+                  
                 ],
               ),
             );
