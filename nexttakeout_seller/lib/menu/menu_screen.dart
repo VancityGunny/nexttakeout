@@ -74,38 +74,58 @@ class MenuScreenState extends State<MenuScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: GridView.builder(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
                       itemCount: currentState.menuItems.length,
                       itemBuilder: (context, index) {
                         return Card(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                width: 150.0,
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Image.network(
-                                      currentState.menuItems[index].photoUrl,
-                                      width: 150.0,
-                                      height: 75.0),
+                          child: Container(
+                            alignment: Alignment.bottomRight,
+                              height: 180.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.black.withOpacity(0.7),
+                                      BlendMode.dstATop),
+                                  image: Image.network(currentState
+                                          .menuItems[index].photoUrl)
+                                      .image,
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
                                 ),
                               ),
-                              Container(
-                                  width: 150.0,
-                                  child:
-                                      Text(currentState.menuItems[index].name)),
-                              Container(
-                                  width: 150.0,
-                                  child: Text('Stock:' +
+                              child: Column(children: <Widget>[
+                                Text(
+                                  currentState.menuItems[index].name,
+                                  style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                            // bottomLeft
+                                            offset: Offset(1.5, -1.5),
+                                            color: Colors.black)
+                                      ]),
+                                ),
+                                Text(
+                                  'Stock:' +
                                       currentState.menuItems[index].dailyStock
-                                          .toString()))
-                            ],
-                          ),
+                                          .toString(),
+                                  style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                            // bottomLeft
+                                            offset: Offset(1.5, -1.5),
+                                            color: Colors.black)
+                                      ]),
+                                )
+                              ])),
                         );
                       },
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
                     ),
                   ),
                   RaisedButton(
@@ -121,7 +141,10 @@ class MenuScreenState extends State<MenuScreen> {
                         }
                       });
                     },
-                    child: Text('Add Menu Item'),
+                    child: Text(
+                      'Add Menu Item',
+                      style: TextStyle(fontSize: 22.0),
+                    ),
                   ),
                 ],
               ),
