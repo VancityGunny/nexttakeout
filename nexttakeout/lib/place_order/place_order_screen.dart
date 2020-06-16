@@ -9,6 +9,7 @@ import 'package:nexttakeout/order/order_item_model.dart';
 import 'package:nexttakeout/order/order_model.dart';
 import 'package:nexttakeout/place_order/index.dart';
 import 'package:uuid/uuid.dart';
+import 'package:nexttakeout/common/global_object.dart' as globals;
 
 class PlaceOrderScreen extends StatefulWidget {
   const PlaceOrderScreen({
@@ -298,7 +299,8 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                 e,
                                 DateTime.now(),
                                 currentDate,
-                                'Pending');
+                                'Pending',
+                                globals.currentUserDisplayName);
                             menuRepo.placeNewOrderItem(
                                 business.id, newMenuOrder);
                             //update quanity of the order

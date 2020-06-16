@@ -36,6 +36,7 @@ class AuthRepository {
     }
     globals.loggedInUser = loggedInUser;
     globals.currentUserId = loggedInUser.id;
+    globals.currentUserDisplayName = loggedInUser.displayName;
     return loggedInUser;
   }
 

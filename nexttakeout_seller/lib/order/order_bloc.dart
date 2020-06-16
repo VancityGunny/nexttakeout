@@ -3,6 +3,8 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nexttakeout_seller/business/business_repository.dart';
+import 'package:nexttakeout_seller/menu/index.dart';
 import 'package:nexttakeout_seller/menu/menu_model.dart';
 import 'package:nexttakeout_seller/order/index.dart';
 import 'package:nexttakeout_seller/common/global_object.dart' as globals;
@@ -42,11 +44,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             groupBy(event.data['orderItems'], (t) => t['pickupDate']);
         newOrdersByDay.entries.forEach((element) {
           var menuItemsBreakdown =
-              groupBy(element.value, (e) => e['menuOrdered']);
+              groupBy(element.value, (e) => e['menuOrdered']['name']);
           List<OrderCountModel> orderBreakdown = new List<OrderCountModel>();
           menuItemsBreakdown.entries.forEach((tmpMenu) {
             orderBreakdown.add(new OrderCountModel(
-                MenuModel.fromJson(tmpMenu.key), tmpMenu.value.length));
+                MenuModel.fromJson(tmpMenu.value.first['menuOrdered']), tmpMenu.value.length));
           });
           var newEntry =
               new OrderSummaryModel(element.key.toDate(), orderBreakdown);

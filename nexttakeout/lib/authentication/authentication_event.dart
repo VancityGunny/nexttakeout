@@ -78,6 +78,7 @@ class LoadAuthEvent extends AuthEvent {
         final user = await _authRepository.getUserByUid(firebaseUser.uid);
         if (user != null) {
           globals.currentUserId = user.id;
+          globals.currentUserDisplayName = user.displayName;
           yield AuthenticatedAuthState(user.displayName);
         } else {
           yield InAuthState();

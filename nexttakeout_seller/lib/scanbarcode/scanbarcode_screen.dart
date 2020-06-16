@@ -90,6 +90,8 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
                                           tempOrderItems.menuOrdered.name),
                                       Text('Pickup Date: ' +
                                           tempOrderItems.pickupDate.toString()),
+                                      Text('Customer: ' +
+                                          tempOrderItems.customerName),
                                       Text('Status: ' +
                                           tempOrderItems.orderStatus)
                                     ],
@@ -98,7 +100,6 @@ class ScanbarcodeScreenState extends State<ScanbarcodeScreen> {
                               ),
                             );
                           })),
-                  
                 ],
               ),
             );

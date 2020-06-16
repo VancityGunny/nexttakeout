@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nexttakeout_seller/order/index.dart';
 import 'package:nexttakeout_seller/order/order_item_model.dart';
 
@@ -119,13 +120,23 @@ class OrderScreenState extends State<OrderScreen> {
                             itemBuilder: (BuildContext context, int index) {
                               OrderSummaryModel tempOrderItems =
                                   snapshot.data[index];
-                              return Column(
+                              return Row(
                                 children: <Widget>[
-                                  Text('Menu Ordered: ' +
-                                      tempOrderItems.orders.length.toString()),
-                                  Text('Pickup Date: ' +
-                                      tempOrderItems.pickupDate.toString()),
-                                  Row(
+                                  Column(children: <Widget>[
+                                    Text(
+                                      new DateFormat.E()
+                                          .format(tempOrderItems.pickupDate),
+                                      style: TextStyle(fontSize: 25.0),
+                                    ),
+                                    Text(
+                                      tempOrderItems.pickupDate.day.toString() +
+                                          ' ' +
+                                          new DateFormat.MMM().format(
+                                              tempOrderItems.pickupDate),
+                                      style: TextStyle(fontSize: 15.0),
+                                    ),
+                                  ]),
+                                  Column(
                                       children: new List<Widget>.generate(
                                           tempOrderItems.orders.length,
                                           (itemIndex) {
