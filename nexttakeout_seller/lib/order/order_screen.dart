@@ -121,6 +121,7 @@ class OrderScreenState extends State<OrderScreen> {
                               OrderSummaryModel tempOrderItems =
                                   snapshot.data[index];
                               return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Column(children: <Widget>[
                                     Text(
