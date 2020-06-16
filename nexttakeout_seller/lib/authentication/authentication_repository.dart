@@ -65,4 +65,11 @@ class AuthRepository {
     globals.currentUserId = userId;
     return userId.toString();
   }
+
+  Future<void> signOut() async {
+    return Future.wait([
+      _firebaseAuth.signOut(),
+      _googleSignIn.signOut(),
+    ]);
+  }
 }

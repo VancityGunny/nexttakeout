@@ -43,6 +43,7 @@ dependencies:
   image_picker: ^0.6.7+1
   path_provider: ^1.6.9
   rxdart: ^0.23.1
+  intl: ^0.16.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

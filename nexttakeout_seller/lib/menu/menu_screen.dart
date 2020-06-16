@@ -86,7 +86,8 @@ class MenuScreenState extends State<MenuScreen> {
                                   fit: BoxFit.scaleDown,
                                   child: Image.network(
                                       currentState.menuItems[index].photoUrl,
-                                      width: 150.0, height:75.0),
+                                      width: 150.0,
+                                      height: 75.0),
                                 ),
                               ),
                               Container(
@@ -122,7 +123,6 @@ class MenuScreenState extends State<MenuScreen> {
                     },
                     child: Text('Add Menu Item'),
                   ),
-                  
                 ],
               ),
             );
@@ -237,10 +237,11 @@ class MenuAddDialogState extends State<MenuAddDialog> {
   Future getImage() async {
     var picker = ImagePicker();
     var pickedFile = await picker.getImage(source: ImageSource.gallery);
-
-    setState(() {
-      _image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   void _submitForm() async {
