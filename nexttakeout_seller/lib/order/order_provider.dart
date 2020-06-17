@@ -36,35 +36,30 @@ class OrderProvider {
         _firestore.collection('/businessOrders').document(businessId);
     var currentOrderItems = (await foundBusinessObj.get()).data['orderItems'];
     List<OrderItemModel> tempList = new List<OrderItemModel>();
-    currentOrderItems.forEach((f){
-        var tempObj = OrderItemModel.fromJson(f);
-        if(tempObj.orderItemId == orderItem.orderItemId){
-          tempList.add(orderItem);
-        }
-        else
-        {
-          tempList.add(tempObj);
-        }
+    currentOrderItems.forEach((f) {
+      var tempObj = OrderItemModel.fromJson(f);
+      if (tempObj.orderItemId == orderItem.orderItemId) {
+        tempList.add(orderItem);
+      } else {
+        tempList.add(tempObj);
+      }
     });
 
     foundBusinessObj
         .setData({'orderItems': tempList.map((e) => e.toJson()).toList()});
 
-
     // now update user order too
     var foundUserOrderObj =
-        _firestore.collection('/userOrders').document(businessId);
+        _firestore.collection('/userOrders').document(orderItem.customerId);
     currentOrderItems = (await foundBusinessObj.get()).data['orderItems'];
     tempList = new List<OrderItemModel>();
-    currentOrderItems.forEach((f){
-        var tempObj = OrderItemModel.fromJson(f);
-        if(tempObj.orderItemId == orderItem.orderItemId){
-          tempList.add(orderItem);
-        }
-        else
-        {
-          tempList.add(tempObj);
-        }
+    currentOrderItems.forEach((f) {
+      var tempObj = OrderItemModel.fromJson(f);
+      if (tempObj.orderItemId == orderItem.orderItemId) {
+        tempList.add(orderItem);
+      } else {
+        tempList.add(tempObj);
+      }
     });
 
     foundUserOrderObj

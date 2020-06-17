@@ -300,7 +300,8 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                 DateTime.now(),
                                 currentDate,
                                 'Pending',
-                                globals.currentUserDisplayName);
+                                globals.currentUserDisplayName,
+                                globals.currentUserId);
                             menuRepo.placeNewOrderItem(
                                 business.id, newMenuOrder);
                             //update quanity of the order

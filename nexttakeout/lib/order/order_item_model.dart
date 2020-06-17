@@ -36,12 +36,13 @@ class OrderItemModel extends Equatable {
   DateTime pickupDate;
   String orderStatus; // Pending, Ready, Completed
   String customerName;
+  String customerId;
   
-  OrderItemModel(this.orderItemId, this.orderId, this.menuOrdered, this.orderedDate, this.pickupDate, this.orderStatus, this.customerName);
+  OrderItemModel(this.orderItemId, this.orderId, this.menuOrdered, this.orderedDate, this.pickupDate, this.orderStatus, this.customerName, this.customerId);
 
   @override
   List<Object> get props =>
-      [orderItemId, orderId, menuOrdered, orderedDate, pickupDate, orderStatus, customerName];
+      [orderItemId, orderId, menuOrdered, orderedDate, pickupDate, orderStatus, customerName, customerId];
 
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {
     return OrderItemModel(
@@ -51,7 +52,8 @@ class OrderItemModel extends Equatable {
         json['orderedDate'].toDate() as DateTime,
         json['pickupDate'].toDate() as DateTime,
         json['orderStatus'] as String,
-        json['customerName'] as String
+        json['customerName'] as String,
+        json['customerId'] as String
         );
   }
 
@@ -64,6 +66,7 @@ class OrderItemModel extends Equatable {
     data['pickupDate'] = pickupDate;
     data['orderStatus'] = orderStatus;
     data['customerName'] = customerName;
+    data['customerId'] = customerId;
     return data;
   }
 }
