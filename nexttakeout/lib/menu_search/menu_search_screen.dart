@@ -185,8 +185,7 @@ class MenuSearchScreenState extends State<MenuSearchScreen> {
                       Image.network(e.photoUrl),
                       Text(
                         e.name,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       )
                     ],
                   ),

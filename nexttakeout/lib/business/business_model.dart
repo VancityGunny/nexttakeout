@@ -41,7 +41,7 @@ class BusinessModel extends Equatable {
         doc.data['name'] as String,
         null, //yelpId
         doc.data['phone'] as String,
-        doc.data['imageurl'] as String,
+        doc.data['imageUrl'] as String,
         (doc.data['address'] as List<dynamic>).map((dynamic e) => e as String).toList() as List<String>,
         null, //geopoint
         doc.data['owner_user_id'] as String);
@@ -66,7 +66,7 @@ class BusinessModel extends Equatable {
     data['name'] = this.businessName;
     data['yelpId'] = this.yelpId;
     data['phone'] = this.phone;
-    data['image_url'] = this.photoUrl;
+    data['imageUrl'] = this.photoUrl;
     data['display_address'] = this.address;
     data['coordinates'] = this.coordinates;
     data['owner_user_id'] = this.ownerUserId;

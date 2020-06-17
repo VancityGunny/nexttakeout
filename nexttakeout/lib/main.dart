@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nexttakeout/authentication/authentication_bloc.dart';
 import 'package:nexttakeout/home_screen.dart';
 
@@ -94,7 +95,40 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
-      ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(FontAwesomeIcons.signOutAlt),
+            onPressed: () {
+              // confirm before sign out
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return AlertDialog(
+                      title: Text('Sign out?'),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            _authBloc.add(
+                              LogOutEvent(),
+                            );
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Yes'),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('No'),
+                        ),
+                      ],
+                    );
+                  },
+                  barrierDismissible: false);
+            },
+          )
+        ],
+      ),      
       body: Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.

@@ -30,6 +30,24 @@ class RegisterNewBusinessAuthEvent extends AuthEvent {
   }
 }
 
+class LogOutEvent extends AuthEvent {
+  @override
+  String toString() => 'LogOutEvent';
+  LogOutEvent();
+
+  @override
+  Stream<AuthState> applyAsync({AuthState currentState, AuthBloc bloc}) async* {
+    try {
+      
+    _authRepository.signOut();
+      yield InAuthState();
+    } catch (_) {
+      //TODO: catch failed login
+      //yield LogInFailureState();
+    }
+  }
+}
+
 class LoginInWithGoogleAuthEvent extends AuthEvent {
   @override
   String toString() => 'LoginInWithGoogleAuthEvent';
