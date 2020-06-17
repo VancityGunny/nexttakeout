@@ -49,5 +49,25 @@ class OrderProvider {
 
     foundBusinessObj
         .setData({'orderItems': tempList.map((e) => e.toJson()).toList()});
+
+
+    // now update user order too
+    var foundUserOrderObj =
+        _firestore.collection('/userOrders').document(businessId);
+    currentOrderItems = (await foundBusinessObj.get()).data['orderItems'];
+    tempList = new List<OrderItemModel>();
+    currentOrderItems.forEach((f){
+        var tempObj = OrderItemModel.fromJson(f);
+        if(tempObj.orderItemId == orderItem.orderItemId){
+          tempList.add(orderItem);
+        }
+        else
+        {
+          tempList.add(tempObj);
+        }
+    });
+
+    foundUserOrderObj
+        .setData({'orderItems': tempList.map((e) => e.toJson()).toList()});
   }
 }
