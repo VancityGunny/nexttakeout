@@ -155,8 +155,7 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                             color: Colors.blue,
                                             onPressed: () {
                                               //View menu
-                                              orderThis(this.currentBusiness,
-                                                  currentOrders[index]);
+                                              orderThis(currentOrders[index]);
                                             },
                                             child: Text('Place an Order'),
                                           ),
@@ -272,11 +271,13 @@ class PlaceOrderScreenState extends State<PlaceOrderScreen> {
     widget._placeOrderBloc.add(LoadPlaceOrderEvent(isError));
   }
 
-  void orderThis(BusinessModel business, OrderModel currentOrder) async {
+  void orderThis(OrderModel currentOrder) async {
     //load menu
 
     MenuRepository menuRepo = new MenuRepository();
-    List<MenuModel> businessMenu = await menuRepo.fetchMenuItems(business.id);
+    BusinessRepository businessRepo = new BusinessRepository();
+    var business = await businessRepo.getBusinessById(currentOrder.businessId);
+    List<MenuModel> businessMenu = await menuRepo.fetchMenuItems(currentOrder.businessId);
     showDialog(
         context: context,
         builder: (context) {
