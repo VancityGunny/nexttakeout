@@ -1,4 +1,4 @@
-Inspiration
+#Inspiration
 As the restaurants starting to reopen after the shutdown, their seating capacity for dine-in option are still limited by the government. To get through these times, they would likely needed to rely on their takeout/delivery sales to get by. Many restaurants have already closed down for good. Throughout the years I have lost so many of my favorites restaurants that have great food but perhaps does not adequate fund or cashflow.
 
 What it does
